@@ -61,23 +61,90 @@ const visionQuestions = [
 /* ---------------- COLOR BLINDNESS DATA ---------------- */
 // Each plate uses a number drawn over a colored background.
 // Colors are picked to mimic Ishihara red/green confusion.
+// Each plate: hidden number (figure), background color theme, foreground theme.
+// Themes: 'rg' = red figure on green dots (classic red-green Ishihara).
+//         'gr' = green figure on red dots.
+//         'by' = blue figure on yellow/orange dots.
 const colorPlates = [
-  { number: '12', bg: '#e89c54', fg: '#7fb069' },  // easy demo
-  { number: '8',  bg: '#d96a4a', fg: '#a3c585' },
-  { number: '6',  bg: '#c45a3a', fg: '#94b86c' },
-  { number: '29', bg: '#e5a05a', fg: '#6da265' },
-  { number: '5',  bg: '#cc6f3c', fg: '#9bbf78' },
-  { number: '3',  bg: '#d97a45', fg: '#85b06d' },
-  { number: '15', bg: '#c66838', fg: '#9ec47e' },
-  { number: '74', bg: '#e09660', fg: '#7aa863' },
-  { number: '2',  bg: '#cf7240', fg: '#92b975' },
-  { number: '45', bg: '#d8884e', fg: '#83b06b' },
-  { number: '7',  bg: '#c46235', fg: '#a0c984' },
-  { number: '16', bg: '#dc8a55', fg: '#88b46f' },
-  { number: '42', bg: '#e09a5e', fg: '#79a662' },
-  { number: '9',  bg: '#cb6e3b', fg: '#9bc079' },
-  { number: '8',  bg: '#d77e48', fg: '#8db374' }
+  { number: '12', theme: 'rg' },
+  { number: '8',  theme: 'gr' },
+  { number: '6',  theme: 'rg' },
+  { number: '29', theme: 'gr' },
+  { number: '5',  theme: 'rg' },
+  { number: '3',  theme: 'by' },
+  { number: '15', theme: 'gr' },
+  { number: '74', theme: 'rg' },
+  { number: '2',  theme: 'gr' },
+  { number: '45', theme: 'rg' },
+  { number: '7',  theme: 'by' },
+  { number: '16', theme: 'gr' },
+  { number: '42', theme: 'rg' },
+  { number: '9',  theme: 'gr' },
+  { number: '8',  theme: 'rg' }
 ];
+
+/* Draw a realistic Ishihara-style plate using random circles.
+   - We render the target number onto an offscreen canvas, then use the
+     pixel mask to color dots that fall on the number with the "figure"
+     palette and dots outside with the "background" palette. */
+function drawIshiharaPlate(plate) {
+  const canvas = document.getElementById('ishiharaCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height, R = W / 2;
+
+  // Color palettes (figure / background)
+  const palettes = {
+    rg: { fig: ['#c0392b','#a93226','#922b21','#cb4335','#e74c3c'],
+          bg:  ['#7fb069','#9bc28b','#b5cda3','#d9c97a','#e6c66b'] },
+    gr: { fig: ['#27ae60','#2ecc71','#52be80','#7dcea0','#48c9b0'],
+          bg:  ['#d35400','#e67e22','#dc7633','#e59866','#f0b27a'] },
+    by: { fig: ['#1f6dad','#2874a6','#2e86c1','#3498db','#5dade2'],
+          bg:  ['#e6b34a','#f1c40f','#e59866','#dc7633','#d4ac0d'] }
+  };
+  const pal = palettes[plate.theme] || palettes.rg;
+
+  // 1) Build a mask of where the number is
+  const mask = document.createElement('canvas');
+  mask.width = W; mask.height = H;
+  const mctx = mask.getContext('2d');
+  mctx.fillStyle = '#000';
+  mctx.fillRect(0, 0, W, H);
+  mctx.fillStyle = '#fff';
+  mctx.font = 'bold 200px Arial, sans-serif';
+  mctx.textAlign = 'center';
+  mctx.textBaseline = 'middle';
+  mctx.fillText(plate.number, W / 2, H / 2 + 6);
+  const maskData = mctx.getImageData(0, 0, W, H).data;
+
+  // 2) Clear plate canvas
+  ctx.clearRect(0, 0, W, H);
+
+  // 3) Draw many random circles inside the plate disc
+  const dotCount = 1400;
+  for (let i = 0; i < dotCount; i++) {
+    // Random point inside circle (rejection sampling)
+    let x, y, dx, dy;
+    do {
+      x = Math.random() * W;
+      y = Math.random() * H;
+      dx = x - R; dy = y - R;
+    } while (dx * dx + dy * dy > (R - 4) * (R - 4));
+
+    // Random radius (bigger dots more common, small dots fill gaps)
+    const r = 2 + Math.random() * Math.random() * 9;
+
+    // Look up mask
+    const idx = ((y | 0) * W + (x | 0)) * 4;
+    const onFigure = maskData[idx] > 128;
+
+    const colors = onFigure ? pal.fig : pal.bg;
+    ctx.fillStyle = colors[(Math.random() * colors.length) | 0];
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
 
 /* ---------------- TEST ENGINE (shared) ---------------- */
 let currentQ = 0;
@@ -127,13 +194,20 @@ function renderQuestion() {
   const box = document.getElementById('questionBox');
 
   if (activeTest === 'vision') {
-    // Decrease contrast and size as questions progress
-    const opacity = 1 - (currentQ * 0.045);   // 1.0 -> ~0.36
-    const size = 110 - (currentQ * 4);         // 110px -> 50px
+    // Strong, visible decrease in size + brightness/contrast as user progresses
+    const size = Math.max(22, 200 - currentQ * 12);          // 200px -> 32px
+    const opacity = Math.max(0.18, 1 - currentQ * 0.06);     // 1.0 -> ~0.18
+    const brightness = Math.max(0.35, 1 - currentQ * 0.045); // 1.0 -> ~0.36
+    const contrast = Math.max(0.45, 1 - currentQ * 0.035);   // 1.0 -> ~0.49
+    const blur = Math.min(1.6, currentQ * 0.1);              // 0 -> ~1.4px
     box.innerHTML = `
-      <div class="question-stimulus"
-           style="font-size:${size}px; opacity:${opacity};">
-        ${q.stimulus}
+      <div class="stimulus-frame">
+        <div class="question-stimulus"
+             style="font-size:${size}px; opacity:${opacity};
+                    filter: brightness(${brightness}) contrast(${contrast}) blur(${blur}px);">
+          ${q.stimulus}
+        </div>
+        <span class="size-hint">Size: ${size}px • Contrast: ${Math.round(contrast*100)}%</span>
       </div>
       <p style="color:var(--muted)">Select what you see:</p>
       <div class="options">
@@ -143,17 +217,16 @@ function renderQuestion() {
         `).join('')}
       </div>`;
   } else {
-    // Color blindness plate
+    // Realistic Ishihara dot plate rendered on canvas
     box.innerHTML = `
-      <div class="ishihara-plate"
-           style="background:${q.bg}; color:${q.fg};">
-        ${q.number}
-      </div>
-      <p style="color:var(--muted)">Type the number you see (or 0 if none):</p>
+      <canvas id="ishiharaCanvas" width="360" height="360" class="ishihara-canvas"></canvas>
+      <p style="color:var(--muted)">Type the number you see (leave blank if none):</p>
       <input type="text" class="name-input" id="plateAnswer"
-             style="max-width:200px;margin:10px auto;display:block;text-align:center"
+             style="max-width:220px;margin:10px auto;display:block;text-align:center"
+             placeholder="Type what you see"
              value="${answers[currentQ] || ''}"
              oninput="answers[${currentQ}] = this.value.trim()" />`;
+    drawIshiharaPlate(q);
   }
 
   document.getElementById('prevBtn').disabled = currentQ === 0;

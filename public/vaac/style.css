@@ -302,15 +302,31 @@ img{ max-width:100%; }
 }
 .socials a:hover{ transform: translateY(-3px); background: var(--primary); color:#fff; }
 
-/* ---------- Ishihara Plate ---------- */
-.ishihara-plate{
-  width: 260px; height: 260px;
+/* ---------- Ishihara Plate (canvas) ---------- */
+.ishihara-canvas{
+  display:block;
+  width: min(360px, 80vw);
+  height: auto;
+  margin: 10px auto 16px;
   border-radius: 50%;
-  margin: 20px auto;
-  display:flex; align-items:center; justify-content:center;
-  font-weight: 900; font-size: 5rem;
-  position: relative; overflow:hidden;
-  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+  animation: fadeIn .4s ease;
+}
+/* ---------- Vision stimulus frame ---------- */
+.stimulus-frame{
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center;
+  min-height: 240px;
+  padding: 20px;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  margin: 10px auto 4px;
+}
+.size-hint{
+  margin-top: 14px; font-size: .8rem;
+  color: var(--muted); letter-spacing: .5px;
 }
 
 /* ---------- Footer ---------- */
