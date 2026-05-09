@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | VAAC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="loader"><div class="loader-eye"></div></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand"><div class="brand-eye"></div>VAAC</a>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="vision-test.html">Vision Test</a></li>
+        <li><a href="color-test.html">Color Blindness Test</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+        <li><button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="container">
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="section-sub">Have questions or feedback? We'd love to hear from you.</p>
+
+    <div class="contact-grid">
+      <!-- Contact info -->
+      <div class="about-block">
+        <h3>Contact Information</h3>
+        <p style="margin-top:10px"><strong>📧 Email:</strong> ruchit.vaac@example.com</p>
+        <p><strong>📞 Phone:</strong> +91 98765 43210</p>
+        <p><strong>📍 Location:</strong> India</p>
+
+        <h3 style="margin-top:20px">Follow</h3>
+        <div class="socials">
+          <a href="#" title="Facebook">f</a>
+          <a href="#" title="Twitter">t</a>
+          <a href="#" title="Instagram">ig</a>
+          <a href="#" title="LinkedIn">in</a>
+        </div>
+      </div>
+
+      <!-- Contact form -->
+      <form class="about-block" onsubmit="return validateContact(event)" novalidate>
+        <h3>Send a Message</h3>
+        <div id="contactSuccess"
+             style="display:none;background:#16a34a;color:#fff;padding:10px;border-radius:8px;margin:10px 0">
+          ✓ Message sent successfully!
+        </div>
+
+        <div class="form-group">
+          <label for="cName">Name</label>
+          <input type="text" id="cName" />
+          <div class="form-error" id="eName">Please enter your name.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="cEmail">Email</label>
+          <input type="email" id="cEmail" />
+          <div class="form-error" id="eEmail">Please enter a valid email.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="cMsg">Message</label>
+          <textarea id="cMsg" rows="4"></textarea>
+          <div class="form-error" id="eMsg">Message must be at least 10 characters.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Send Message →</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    Developed by <strong>Ruchit Sharma</strong> • Visual Acuity Analysis & Compensation © 2025
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
