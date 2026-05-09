@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision Test | VAAC</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- jsPDF for PDF report -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div id="loader"><div class="loader-eye"></div></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand"><div class="brand-eye"></div>VAAC</a>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="vision-test.html" class="active">Vision Test</a></li>
+        <li><a href="color-test.html">Color Blindness Test</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="container">
+    <h2 class="section-title">Vision & Contrast Sensitivity Test</h2>
+    <p class="section-sub">15 questions • Letters, Numbers, Shapes & Mixed</p>
+
+    <!-- ============ START SCREEN ============ -->
+    <div id="startScreen" class="test-wrap">
+      <h3>Before you begin</h3>
+      <p style="color:var(--muted); margin:10px 0 16px">
+        Sit at arm's length from your screen. Set device brightness to maximum.
+        Cover one eye if you wish to test eyes separately.
+      </p>
+      <input type="text" id="userName" class="name-input" placeholder="Enter your full name" />
+      <button class="btn btn-primary" onclick="startTest('vision')">Start Test →</button>
+    </div>
+
+    <!-- ============ TEST SCREEN ============ -->
+    <div id="testScreen" class="test-wrap" style="display:none">
+      <div class="test-header">
+        <span id="qCounter">Question 1 / 15</span>
+        <span class="timer" id="timer">⏱ 00:00</span>
+      </div>
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      <div id="questionBox" class="question-box"></div>
+      <div class="test-controls">
+        <button id="prevBtn" class="btn btn-outline" onclick="prevQuestion()">← Previous</button>
+        <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()">Next →</button>
+      </div>
+    </div>
+
+    <!-- ============ RESULT SCREEN ============ -->
+    <div id="resultScreen" style="display:none"></div>
+  </section>
+
+  <footer class="footer">
+    Developed by <strong>Ruchit Sharma</strong> • Visual Acuity Analysis & Compensation © 2025
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

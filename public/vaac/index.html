@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visual Acuity Analysis & Compensation | Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Loading animation shown until page is ready -->
+  <div id="loader"><div class="loader-eye"></div></div>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <div class="brand-eye"></div>
+        VAAC
+      </a>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="vision-test.html">Vision Test</a></li>
+        <li><a href="color-test.html">Color Blindness Test</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero">
+    <h1>Visual Acuity Analysis & Compensation</h1>
+    <p>A modern digital platform to analyze your vision, detect color blindness,
+       and get instant suggestions — all from the comfort of your screen.</p>
+    <div class="hero-buttons">
+      <a href="vision-test.html" class="btn btn-primary">Start Vision Test →</a>
+      <a href="color-test.html" class="btn btn-outline">Color Blindness Test</a>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURES ==================== -->
+  <section class="container">
+    <h2 class="section-title">What You Can Do</h2>
+    <p class="section-sub">Three powerful tools, one simple interface.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">👁️</div>
+        <h3>Vision Test</h3>
+        <p>Check your visual acuity with letters, numbers, and shapes that
+           gradually decrease in size and contrast.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>Color Blindness</h3>
+        <p>15 Ishihara-style color plates to detect normal vision,
+           red-green deficiency, or partial color blindness.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📄</div>
+        <h3>Instant Report</h3>
+        <p>View score, accuracy, suggestions and download a PDF report
+           — saved in your browser history.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INTRO ==================== -->
+  <section class="container">
+    <div class="about-block">
+      <h3>About this Project</h3>
+      <p>This system was built as a final-year project to demonstrate how
+      web technologies can support preventive eye-care. It combines
+      vision-acuity testing with color-blindness screening in a single,
+      easy-to-use web application — making basic eye-health awareness
+      accessible to everyone.</p>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    Developed by <strong>Ruchit Sharma</strong> • Visual Acuity Analysis & Compensation © 2025
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
