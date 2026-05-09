@@ -127,13 +127,20 @@ function renderQuestion() {
   const box = document.getElementById('questionBox');
 
   if (activeTest === 'vision') {
-    // Decrease contrast and size as questions progress
-    const opacity = 1 - (currentQ * 0.045);   // 1.0 -> ~0.36
-    const size = 110 - (currentQ * 4);         // 110px -> 50px
+    // Strong, visible decrease in size + brightness/contrast as user progresses
+    const size = Math.max(22, 200 - currentQ * 12);          // 200px -> 32px
+    const opacity = Math.max(0.18, 1 - currentQ * 0.06);     // 1.0 -> ~0.18
+    const brightness = Math.max(0.35, 1 - currentQ * 0.045); // 1.0 -> ~0.36
+    const contrast = Math.max(0.45, 1 - currentQ * 0.035);   // 1.0 -> ~0.49
+    const blur = Math.min(1.6, currentQ * 0.1);              // 0 -> ~1.4px
     box.innerHTML = `
-      <div class="question-stimulus"
-           style="font-size:${size}px; opacity:${opacity};">
-        ${q.stimulus}
+      <div class="stimulus-frame">
+        <div class="question-stimulus"
+             style="font-size:${size}px; opacity:${opacity};
+                    filter: brightness(${brightness}) contrast(${contrast}) blur(${blur}px);">
+          ${q.stimulus}
+        </div>
+        <span class="size-hint">Size: ${size}px • Contrast: ${Math.round(contrast*100)}%</span>
       </div>
       <p style="color:var(--muted)">Select what you see:</p>
       <div class="options">
@@ -143,17 +150,16 @@ function renderQuestion() {
         `).join('')}
       </div>`;
   } else {
-    // Color blindness plate
+    // Realistic Ishihara dot plate rendered on canvas
     box.innerHTML = `
-      <div class="ishihara-plate"
-           style="background:${q.bg}; color:${q.fg};">
-        ${q.number}
-      </div>
-      <p style="color:var(--muted)">Type the number you see (or 0 if none):</p>
+      <canvas id="ishiharaCanvas" width="360" height="360" class="ishihara-canvas"></canvas>
+      <p style="color:var(--muted)">Type the number you see (leave blank if none):</p>
       <input type="text" class="name-input" id="plateAnswer"
-             style="max-width:200px;margin:10px auto;display:block;text-align:center"
+             style="max-width:220px;margin:10px auto;display:block;text-align:center"
+             placeholder="Type what you see"
              value="${answers[currentQ] || ''}"
              oninput="answers[${currentQ}] = this.value.trim()" />`;
+    drawIshiharaPlate(q);
   }
 
   document.getElementById('prevBtn').disabled = currentQ === 0;
